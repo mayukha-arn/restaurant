@@ -46,12 +46,8 @@ const foodItems: FoodItem[] = [
   },
 ];
 
-// Checkered pattern background component
+// Checkered pattern background component (CSS-based for performance)
 const CheckeredBackground = () => {
-  const checkerSize = 40;
-  const rows = Math.ceil(500 / checkerSize);
-  const cols = Math.ceil(1000 / checkerSize);
-
   return (
     <div
       className="home-checkered-background"
@@ -61,32 +57,17 @@ const CheckeredBackground = () => {
         left: 0,
         right: 0,
         bottom: 0,
-        display: 'grid',
-        gridTemplateColumns: `repeat(${cols}, ${checkerSize}px)`,
-        gridTemplateRows: `repeat(${rows}, ${checkerSize}px)`,
+        backgroundImage: `
+          linear-gradient(45deg, #E8E8E8 25%, transparent 25%),
+          linear-gradient(-45deg, #E8E8E8 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #E8E8E8 75%),
+          linear-gradient(-45deg, transparent 75%, #E8E8E8 75%)
+        `,
+        backgroundSize: '40px 40px',
+        backgroundPosition: '0 0, 0 20px, 20px -20px, -20px 0px',
         backgroundColor: '#FFFFFF',
       }}
-    >
-      {Array.from({ length: rows * cols }).map((_, index) => {
-        const rowIndex = Math.floor(index / cols);
-        const colIndex = index % cols;
-        const isChecked = (rowIndex + colIndex) % 2 === 1;
-
-        return (
-          <div
-            key={`cell-${index}`}
-            style={{
-              width: checkerSize,
-              height: checkerSize,
-              backgroundColor: isChecked ? '#E8E8E8' : '#FFFFFF',
-              borderWidth: '1px',
-              borderColor: '#D3D3D3',
-              borderStyle: 'solid',
-            }}
-          />
-        );
-      })}
-    </div>
+    />
   );
 };
 
