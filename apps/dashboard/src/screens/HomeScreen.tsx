@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/screens.css';
 
 interface HomeScreenProps {
-  onNavigate?: (section: string) => void;
+  onNavigate?: (section: string, category?: string) => void;
 }
 
 interface DishItem {
@@ -13,6 +13,7 @@ interface DishItem {
   sublabel?: string;
   sublabelColor?: string;
   section: string;
+  category: string;   // menu category to pre-select
   size: number;
   top: string;
   left: string;
@@ -26,6 +27,7 @@ const DISHES: DishItem[] = [
     label: 'BURGERS',
     labelColor: '#DC143C',
     section: 'menu',
+    category: 'Burgers',
     size: 220,
     top: '28%',
     left: '8%',
@@ -38,6 +40,7 @@ const DISHES: DishItem[] = [
     sublabel: 'HOMEMADE',
     sublabelColor: '#FF8C00',
     section: 'menu',
+    category: 'Beverages',
     size: 150,
     top: '12%',
     left: '42%',
@@ -48,7 +51,8 @@ const DISHES: DishItem[] = [
     emoji: '🍟',
     label: 'FRIES',
     labelColor: '#DAA520',
-    section: 'orders',
+    section: 'menu',
+    category: 'Appetizers',
     size: 170,
     top: '50%',
     left: '40%',
@@ -58,7 +62,8 @@ const DISHES: DishItem[] = [
     emoji: '🍨',
     label: 'ICE CREAM',
     labelColor: '#FF69B4',
-    section: 'crm',
+    section: 'menu',
+    category: 'Desserts',
     size: 210,
     top: '20%',
     left: '68%',
@@ -80,7 +85,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
             left: dish.left,
             transform: `rotate(${dish.rotate ?? '0deg'})`,
           }}
-          onClick={() => onNavigate?.(dish.section)}
+          onClick={() => onNavigate?.(dish.section, dish.category)}
         >
           {dish.sublabel && (
             <span className="home-dish-sublabel" style={{ color: dish.sublabelColor }}>

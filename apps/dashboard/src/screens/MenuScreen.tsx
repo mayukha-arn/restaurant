@@ -10,12 +10,14 @@ import '../styles/screens.css';
 
 interface MenuScreenProps {
   onBack?: () => void;
+  initialCategory?: string; // category name to pre-select, e.g. "Burgers"
 }
 
 export const MenuScreen = React.forwardRef<HTMLDivElement, MenuScreenProps>(
-  ({ onBack }, ref) => {
+  ({ onBack, initialCategory }, ref) => {
     const restaurantId = useRestaurantId();
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+    const initialApplied = React.useRef(false);
 
     const {
       data: categories,
@@ -29,12 +31,21 @@ export const MenuScreen = React.forwardRef<HTMLDivElement, MenuScreenProps>(
       error: itemsError,
     } = useMenuItemsListByCategory(selectedCategoryId);
 
-    // Auto-select first category when loaded
+    // Select the requested category (or fall back to first)
     React.useEffect(() => {
-      if (categories && categories.length > 0 && !selectedCategoryId) {
+      if (!categories || categories.length === 0) return;
+      if (initialApplied.current) return;
+      initialApplied.current = true;
+
+      if (initialCategory) {
+        const match = categories.find(
+          (c: any) => c.name.toLowerCase() === initialCategory.toLowerCase()
+        );
+        setSelectedCategoryId(match ? match.id : categories[0].id);
+      } else {
         setSelectedCategoryId(categories[0].id);
       }
-    }, [categories, selectedCategoryId]);
+    }, [categories, initialCategory]);
 
     const formatPrice = (amount: any) => {
       const num = typeof amount === 'string' ? parseFloat(amount) : amount;

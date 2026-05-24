@@ -24,16 +24,24 @@ const NAV_ITEMS: { id: Screen; label: string }[] = [
 
 function AppContent() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
+  const [menuCategory, setMenuCategory] = useState<string | undefined>(undefined);
+
+  const goToMenu = (category?: string) => {
+    setMenuCategory(category);
+    setCurrentScreen('menu');
+  };
 
   const renderScreen = () => {
     switch (currentScreen) {
-      case 'orders':   return <OrdersScreen  onBack={() => setCurrentScreen('home')} />;
-      case 'menu':     return <MenuScreen    onBack={() => setCurrentScreen('home')} />;
-      case 'crm':      return <CRMScreen     onBack={() => setCurrentScreen('home')} />;
+      case 'orders':   return <OrdersScreen   onBack={() => setCurrentScreen('home')} />;
+      case 'menu':     return <MenuScreen     onBack={() => setCurrentScreen('home')} initialCategory={menuCategory} />;
+      case 'crm':      return <CRMScreen      onBack={() => setCurrentScreen('home')} />;
       case 'settings': return <SettingsScreen onBack={() => setCurrentScreen('home')} />;
       case 'home':
       default:
-        return <HomeScreen onNavigate={(s) => setCurrentScreen(s as Screen)} />;
+        return <HomeScreen onNavigate={(s, category?) => {
+          if (s === 'menu') { goToMenu(category); } else { setCurrentScreen(s as Screen); }
+        }} />;
     }
   };
 
@@ -47,7 +55,7 @@ function AppContent() {
             <button
               key={id}
               className={`topnav-tab${currentScreen === id ? ' active' : ''}`}
-              onClick={() => setCurrentScreen(id)}
+              onClick={() => { setMenuCategory(undefined); setCurrentScreen(id); }}
             >
               {label}
             </button>
