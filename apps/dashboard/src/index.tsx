@@ -8,6 +8,8 @@ import {
   Text,
 } from 'react-native';
 import { colors, spacing, typography } from '@shared/tokens';
+import { QueryProvider } from './providers/QueryProvider';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { HomeScreen } from './screens/HomeScreen';
 import { OrdersScreen } from './screens/OrdersScreen';
 import { MenuScreen } from './screens/MenuScreen';
@@ -16,7 +18,7 @@ import { SettingsScreen } from './screens/SettingsScreen';
 
 type Screen = 'home' | 'orders' | 'menu' | 'crm' | 'settings';
 
-export default function App() {
+function AppContent() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
 
   const renderScreen = () => {
@@ -61,6 +63,23 @@ export default function App() {
         {renderScreen()}
       </View>
     </SafeAreaView>
+  );
+}
+
+/**
+ * Root App Component
+ *
+ * Wraps AppContent with:
+ * - ErrorBoundary: Catches JavaScript errors
+ * - QueryProvider: React Query client and configuration
+ */
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <QueryProvider>
+        <AppContent />
+      </QueryProvider>
+    </ErrorBoundary>
   );
 }
 

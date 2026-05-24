@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { colors, spacing, typography } from '@shared/tokens';
-import { Card } from '@shared/components';
+import { Card, Skeleton } from '@shared/components';
+import { useCustomersList, useRestaurantId } from '../hooks';
 
 interface CRMScreenProps {
   onBack?: () => void;
@@ -9,11 +10,13 @@ interface CRMScreenProps {
 
 export const CRMScreen = React.forwardRef<any, CRMScreenProps>(
   ({ onBack }, ref) => {
-    const mockCustomers = [
-      { id: '1', name: 'John Doe', orders: 5, spend: '$78.50' },
-      { id: '2', name: 'Jane Smith', orders: 3, spend: '$45.99' },
-      { id: '3', name: 'Bob Johnson', orders: 12, spend: '$189.99' },
-    ];
+    const restaurantId = useRestaurantId();
+    const { data: customers, isLoading, error } = useCustomersList(restaurantId);
+
+    const formatCurrency = (amount: any) => {
+      const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+      return `$${num.toFixed(2)}`;
+    };
 
     return (
       <ScrollView
@@ -23,24 +26,47 @@ export const CRMScreen = React.forwardRef<any, CRMScreenProps>(
       >
         <View style={styles.header}>
           <Text style={styles.title}>👥 CRM</Text>
-          <Text style={styles.subtitle}>Customer relationships</Text>
+          <Text style={styles.subtitle}>Customer relationships ({customers?.length || 0})</Text>
         </View>
 
-        {mockCustomers.map((customer) => (
-          <Card key={customer.id} variant="elevated" style={styles.customerCard}>
-            <Text style={styles.customerName}>{customer.name}</Text>
-            <View style={styles.stats}>
-              <View style={styles.stat}>
-                <Text style={styles.statLabel}>Orders</Text>
-                <Text style={styles.statValue}>{customer.orders}</Text>
+        {isLoading ? (
+          <>
+            <Skeleton style={styles.customerCard} />
+            <Skeleton style={styles.customerCard} />
+            <Skeleton style={styles.customerCard} />
+          </>
+        ) : error ? (
+          <Text style={styles.errorText}>Failed to load customers</Text>
+        ) : customers && customers.length > 0 ? (
+          customers.map((customer) => (
+            <Card key={customer.id} variant="elevated" style={styles.customerCard}>
+              <Text style={styles.customerName}>
+                {customer.firstName} {customer.lastName}
+              </Text>
+              {customer.email && (
+                <Text style={styles.customerEmail}>{customer.email}</Text>
+              )}
+              <View style={styles.stats}>
+                <View style={styles.stat}>
+                  <Text style={styles.statLabel}>Orders</Text>
+                  <Text style={styles.statValue}>{customer.totalOrders}</Text>
+                </View>
+                <View style={styles.stat}>
+                  <Text style={styles.statLabel}>Loyalty Pts</Text>
+                  <Text style={styles.statValue}>{customer.loyaltyPoints}</Text>
+                </View>
+                <View style={styles.stat}>
+                  <Text style={styles.statLabel}>Total Spend</Text>
+                  <Text style={styles.statValue}>{formatCurrency(customer.totalSpent)}</Text>
+                </View>
               </View>
-              <View style={styles.stat}>
-                <Text style={styles.statLabel}>Total Spend</Text>
-                <Text style={styles.statValue}>{customer.spend}</Text>
-              </View>
-            </View>
-          </Card>
-        ))}
+            </Card>
+          ))
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No customers yet</Text>
+          </View>
+        )}
       </ScrollView>
     );
   }
@@ -82,6 +108,11 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontWeight: '700',
     color: colors.dark,
+    marginBottom: spacing[1],
+  },
+  customerEmail: {
+    fontSize: typography.fontSize.sm,
+    color: colors.secondary,
     marginBottom: spacing[3],
   },
   stats: {
@@ -100,5 +131,20 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontWeight: 'bold',
     color: colors.primary,
+  },
+  errorText: {
+    fontSize: typography.fontSize.base,
+    color: colors.danger,
+    paddingHorizontal: spacing[4],
+    marginBottom: spacing[4],
+  },
+  emptyContainer: {
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[8],
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: typography.fontSize.base,
+    color: colors.secondary,
   },
 });

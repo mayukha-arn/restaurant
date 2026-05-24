@@ -1,7 +1,8 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Switch, ActivityIndicator } from 'react-native';
 import { colors, spacing, typography } from '@shared/tokens';
 import { Card, Button } from '@shared/components';
+import { useRestaurant, useUpdateRestaurant, useRestaurantId } from '../hooks';
 
 interface SettingsScreenProps {
   onBack?: () => void;
@@ -9,9 +10,44 @@ interface SettingsScreenProps {
 
 export const SettingsScreen = React.forwardRef<any, SettingsScreenProps>(
   ({ onBack }, ref) => {
-    const [autoAccept, setAutoAccept] = React.useState(false);
-    const [openTime, setOpenTime] = React.useState('9:00 AM');
-    const [closeTime, setCloseTime] = React.useState('10:00 PM');
+    const restaurantId = useRestaurantId();
+    const { data: restaurant, isLoading } = useRestaurant(restaurantId);
+    const updateMutation = useUpdateRestaurant();
+
+    const [isOpen, setIsOpen] = React.useState(true);
+    const [openTime, setOpenTime] = React.useState('06:00');
+    const [closeTime, setCloseTime] = React.useState('23:00');
+    const [maxCapacity, setMaxCapacity] = React.useState('50');
+
+    // Load restaurant data when available
+    useEffect(() => {
+      if (restaurant) {
+        setIsOpen(restaurant.isOpen);
+        setOpenTime(restaurant.openingTime || '06:00');
+        setCloseTime(restaurant.closingTime || '23:00');
+        setMaxCapacity(restaurant.maxCapacity?.toString() || '50');
+      }
+    }, [restaurant]);
+
+    const handleSave = async () => {
+      updateMutation.mutate({
+        id: restaurantId,
+        data: {
+          isOpen,
+          openingTime: openTime,
+          closingTime: closeTime,
+          maxCapacity: parseInt(maxCapacity, 10),
+        },
+      });
+    };
+
+    if (isLoading) {
+      return (
+        <View style={[styles.container, styles.loadingContainer]}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      );
+    }
 
     return (
       <ScrollView
@@ -24,59 +60,61 @@ export const SettingsScreen = React.forwardRef<any, SettingsScreenProps>(
           <Text style={styles.subtitle}>Configure your restaurant</Text>
         </View>
 
+        {/* Restaurant Status */}
         <Card variant="elevated" style={styles.settingCard}>
           <View style={styles.settingRow}>
             <View>
-              <Text style={styles.settingLabel}>Auto-accept Orders</Text>
+              <Text style={styles.settingLabel}>Restaurant Open</Text>
               <Text style={styles.settingDescription}>
-                Automatically accept new orders
+                {isOpen ? 'Currently accepting orders' : 'Closed to new orders'}
               </Text>
             </View>
             <Switch
-              value={autoAccept}
-              onValueChange={setAutoAccept}
+              value={isOpen}
+              onValueChange={setIsOpen}
               trackColor={{ false: colors.secondary, true: colors.primary }}
             />
           </View>
         </Card>
 
+        {/* Operating Hours */}
         <Card variant="elevated" style={styles.settingCard}>
           <View style={styles.settingGroup}>
             <Text style={styles.settingLabel}>Operating Hours</Text>
             <View style={styles.timeRow}>
               <View style={styles.timeField}>
-                <Text style={styles.timeLabel}>Open</Text>
+                <Text style={styles.timeLabel}>Opens</Text>
                 <Text style={styles.timeValue}>{openTime}</Text>
               </View>
               <View style={styles.timeField}>
-                <Text style={styles.timeLabel}>Close</Text>
+                <Text style={styles.timeLabel}>Closes</Text>
                 <Text style={styles.timeValue}>{closeTime}</Text>
               </View>
             </View>
+            <Text style={styles.settingDescription}>
+              Max Capacity: {maxCapacity} guests
+            </Text>
           </View>
         </Card>
 
-        <Card variant="elevated" style={styles.settingCard}>
-          <View style={styles.settingGroup}>
-            <Text style={styles.settingLabel}>Service Settings</Text>
-            <View style={styles.infoBox}>
-              <Text style={styles.infoText}>
-                ✓ Service availability tracking enabled
-              </Text>
-              <Text style={styles.infoText}>
-                ✓ Prep time estimates active
-              </Text>
-              <Text style={styles.infoText}>
-                ✓ Customer notifications enabled
-              </Text>
+        {/* Restaurant Info */}
+        {restaurant && (
+          <Card variant="elevated" style={styles.settingCard}>
+            <View style={styles.settingGroup}>
+              <Text style={styles.settingLabel}>{restaurant.name}</Text>
+              <Text style={styles.infoText}>{restaurant.address}</Text>
+              <Text style={styles.infoText}>{restaurant.phone}</Text>
+              <Text style={styles.infoText}>{restaurant.email}</Text>
             </View>
-          </View>
-        </Card>
+          </Card>
+        )}
 
+        {/* Save Button */}
         <Button
-          label="Save Settings"
-          onPress={() => {}}
+          label={updateMutation.isPending ? 'Saving...' : 'Save Settings'}
+          onPress={handleSave}
           style={styles.saveButton}
+          disabled={updateMutation.isPending}
         />
       </ScrollView>
     );
@@ -89,6 +127,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     paddingVertical: spacing[4],
