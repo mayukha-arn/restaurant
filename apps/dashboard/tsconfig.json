@@ -7,13 +7,27 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "jsx": "react-jsx",
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    "baseUrl": "../../",
+    "paths": {
+      "@/*": ["packages/shared/src/*"],
+      "@shared/*": ["packages/shared/src/*"],
+      "@shared/components": ["packages/shared/src/components"],
+      "@restaurant/types": ["packages/types/src"],
+      "@restaurant/types/*": ["packages/types/src/*"],
+      "@api-client": ["packages/api-client/src"],
+      "@api-client/*": ["packages/api-client/src/*"]
+    }
   },
   "include": [
     "src",
+    "../../packages/shared/src",
+    "../../packages/api-client/src",
+    "../../packages/types/src",
     "index.html"
   ],
   "exclude": [

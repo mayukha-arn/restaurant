@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Badge, Skeleton } from '@shared/components';
 import { useOrdersList, useRestaurantId, useUpdateOrder } from '../hooks';
+import type { Order, OrderItem } from '@restaurant/types';
 import '../styles/screens.css';
 
 interface OrdersScreenProps {
@@ -14,7 +15,7 @@ export const OrdersScreen = React.forwardRef<HTMLDivElement, OrdersScreenProps>(
     const updateOrderMutation = useUpdateOrder(restaurantId);
 
     // Format order items for display
-    const formatOrderItems = (orderItems: any[]) => {
+    const formatOrderItems = (orderItems: OrderItem[] | undefined) => {
       if (!orderItems || orderItems.length === 0) return 'No items';
       return orderItems.map((item) => item.menuItem?.name || 'Unknown item').join(', ');
     };
@@ -84,7 +85,7 @@ export const OrdersScreen = React.forwardRef<HTMLDivElement, OrdersScreenProps>(
             </>
           ) : orders && orders.length > 0 ? (
             // Orders list
-            orders.map((order) => (
+            orders.map((order: Order) => (
               <Card key={order.id} variant="elevated" className="order-card">
                 <div className="order-header">
                   <h3 className="order-number">Order #{order.orderNumber}</h3>
@@ -109,12 +110,12 @@ export const OrdersScreen = React.forwardRef<HTMLDivElement, OrdersScreenProps>(
                   <p className="order-total">{formatPrice(order.totalAmount)}</p>
                   <button
                     className={`order-action-btn ${
-                      updateOrderMutation.isPending ? 'disabled' : ''
+                      updateOrderMutation.isLoading ? 'disabled' : ''
                     }`}
                     onClick={() => handleStatusUpdate(order.id, order.status)}
-                    disabled={updateOrderMutation.isPending}
+                    disabled={updateOrderMutation.isLoading}
                   >
-                    {updateOrderMutation.isPending ? (
+                    {updateOrderMutation.isLoading ? (
                       <span className="spinner spinner-sm" />
                     ) : (
                       'Next Status'

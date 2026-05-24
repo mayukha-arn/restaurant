@@ -17,7 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./packages/shared/src/*"],
+      "@restaurant/types": ["./packages/types/src"],
       "@restaurant/types/*": ["./packages/types/src/*"],
+      "@api-client": ["./packages/api-client/src"],
       "@api-client/*": ["./packages/api-client/src/*"]
     }
   },

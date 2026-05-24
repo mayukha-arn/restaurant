@@ -6,14 +6,14 @@
  */
 
 import React, { ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 /**
  * Create a configured QueryClient instance
  *
  * Configuration:
  * - staleTime: 5 minutes (data stays fresh for 5 min)
- * - gcTime: 10 minutes (garbage collect unused queries after 10 min)
+ * - cacheTime: 10 minutes (unused queries cached for 10 min)
  * - retry: 3 attempts on network errors
  * - refetchOnWindowFocus: true (refetch when user returns to tab)
  */
@@ -24,7 +24,7 @@ const createQueryClient = () => {
         // Data is considered fresh for 5 minutes
         staleTime: 1000 * 60 * 5,
         // Unused queries are garbage collected after 10 minutes
-        gcTime: 1000 * 60 * 10,
+        cacheTime: 1000 * 60 * 10,
         // Retry failed requests up to 3 times
         retry: 3,
         // Automatically refetch when window regains focus

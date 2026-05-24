@@ -4,9 +4,7 @@
  */
 
 export const API_BASE_URL =
-  typeof process.env.REACT_APP_API_URL !== 'undefined'
-    ? process.env.REACT_APP_API_URL
-    : 'http://localhost:8787';
+  import.meta.env.VITE_API_URL || 'http://localhost:8787';
 
 export const API_CONFIG = {
   baseURL: API_BASE_URL,

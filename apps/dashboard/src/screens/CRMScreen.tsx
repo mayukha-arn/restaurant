@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Skeleton } from '@shared/components';
 import { useCustomersList, useRestaurantId } from '../hooks';
+import type { Customer } from '@restaurant/types';
 import '../styles/screens.css';
 
 interface CRMScreenProps {
@@ -37,7 +38,7 @@ export const CRMScreen = React.forwardRef<HTMLDivElement, CRMScreenProps>(
           ) : error ? (
             <p className="error-text">Failed to load customers</p>
           ) : customers && customers.length > 0 ? (
-            customers.map((customer) => (
+            customers.map((customer: Customer) => (
               <Card key={customer.id} variant="elevated" className="customer-card">
                 <h3 className="customer-name">
                   {customer.firstName} {customer.lastName}

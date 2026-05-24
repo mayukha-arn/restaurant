@@ -5,6 +5,7 @@ import {
   useMenuItemsListByCategory,
   useRestaurantId,
 } from '../hooks';
+import type { MenuCategory, MenuItem } from '@restaurant/types';
 import '../styles/screens.css';
 
 interface MenuScreenProps {
@@ -60,7 +61,7 @@ export const MenuScreen = React.forwardRef<HTMLDivElement, MenuScreenProps>(
           <p className="error-text">Failed to load categories</p>
         ) : categories && categories.length > 0 ? (
           <div className="categories-scroll">
-            {categories.map((category) => (
+            {categories.map((category: MenuCategory) => (
               <button
                 key={category.id}
                 className={`category-tab ${
@@ -85,7 +86,7 @@ export const MenuScreen = React.forwardRef<HTMLDivElement, MenuScreenProps>(
           ) : itemsError ? (
             <p className="error-text">Failed to load items</p>
           ) : items && items.length > 0 ? (
-            items.map((item) => (
+            items.map((item: MenuItem) => (
               <Card key={item.id} variant="elevated" className="menu-card">
                 <div className="menu-card-header">
                   <div className="menu-item-info">

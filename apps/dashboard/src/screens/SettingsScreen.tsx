@@ -115,10 +115,10 @@ export const SettingsScreen = React.forwardRef<HTMLDivElement, SettingsScreenPro
 
         {/* Save Button */}
         <Button
-          label={updateMutation.isPending ? 'Saving...' : 'Save Settings'}
+          label={updateMutation.isLoading ? 'Saving...' : 'Save Settings'}
           onClick={handleSave}
           className="settings-save-button"
-          disabled={updateMutation.isPending}
+          disabled={updateMutation.isLoading}
         />
       </div>
     );

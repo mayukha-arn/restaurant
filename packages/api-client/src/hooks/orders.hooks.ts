@@ -5,7 +5,7 @@
  * Handles caching, loading states, and mutations automatically
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { ordersApi } from '../services/api.client';
 import { queryKeys } from '../queryKeys';
 import type { Order } from '@restaurant/types';
