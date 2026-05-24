@@ -2,7 +2,7 @@
   "name": "dashboard",
   "version": "1.0.0",
   "description": "Restaurant Dashboard - Vintage Diner Theme",
-  "homepage": "https://your-github-username.github.io/restaurant",
+  "homepage": "https://mayukha-arn.github.io/restaurant",
   "main": "index.tsx",
   "scripts": {
     "dev": "vite",
