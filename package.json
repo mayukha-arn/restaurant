@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.44.0",
-    "axios": "^1.16.1",
-    "react-query": "^3.39.3"
+    "axios": "^1.16.1"
   }
 }
