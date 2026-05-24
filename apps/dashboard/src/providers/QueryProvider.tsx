@@ -6,7 +6,7 @@
  */
 
 import React, { ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 /**
  * Create a configured QueryClient instance
@@ -24,7 +24,7 @@ const createQueryClient = () => {
         // Data is considered fresh for 5 minutes
         staleTime: 1000 * 60 * 5,
         // Unused queries are garbage collected after 10 minutes
-        cacheTime: 1000 * 60 * 10,
+        gcTime: 1000 * 60 * 10,
         // Retry failed requests up to 3 times
         retry: 3,
         // Automatically refetch when window regains focus

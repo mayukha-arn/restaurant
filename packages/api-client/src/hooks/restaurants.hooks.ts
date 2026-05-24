@@ -4,7 +4,7 @@
  * React Query hooks for restaurants API endpoints
  */
 
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { restaurantsApi } from '../services/api.client';
 import { queryKeys } from '../queryKeys';
 import type { Restaurant } from '@restaurant/types';

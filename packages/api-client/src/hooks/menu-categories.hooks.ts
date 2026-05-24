@@ -4,7 +4,7 @@
  * React Query hooks for menu categories API endpoints
  */
 
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { menuCategoriesApi } from '../services/api.client';
 import { queryKeys } from '../queryKeys';
 import type { MenuCategory } from '@restaurant/types';

@@ -4,7 +4,7 @@
  * React Query hooks for menu items API endpoints
  */
 
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { menuItemsApi } from '../services/api.client';
 import { queryKeys } from '../queryKeys';
 import type { MenuItem } from '@restaurant/types';

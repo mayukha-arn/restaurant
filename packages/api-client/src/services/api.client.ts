@@ -22,13 +22,13 @@ import {
 } from '@restaurant/types';
 import mockApi from './mock-api';
 
-// Get API base URL from environment or use default
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
+// Get API base URL from Vite environment or use default
+const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL)
+  ? import.meta.env.VITE_API_URL
+  : 'http://localhost:8787';
 
-// Detect if we should use mock API (browser environment without backend)
-const USE_MOCK_API = typeof window !== 'undefined' &&
-                     (API_BASE_URL.includes('localhost:8787') ||
-                      process.env.REACT_APP_USE_MOCK_API === 'true');
+// Always use mock API in browser (no backend available for GitHub Pages)
+const USE_MOCK_API = typeof window !== 'undefined';
 
 // Create axios instance with base config (used only in real API mode)
 export const apiClient = axios.create({
