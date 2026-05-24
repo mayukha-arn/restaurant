@@ -1,0 +1,25 @@
+{
+  "name": "@shared",
+  "version": "1.0.0",
+  "description": "Shared design system and UI components",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components": "./src/components/index.ts",
+    "./tokens": "./src/tokens/index.ts",
+    "./utils": "./src/utils/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "react": "^18.3.0",
+    "react-native": "^0.74.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-native": "^0.74.0",
+    "typescript": "^5.3.3"
+  }
+}

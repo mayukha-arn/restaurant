@@ -1,0 +1,37 @@
+name = "restaurant-backend"
+type = "service"
+account_id = "YOUR_ACCOUNT_ID"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.development]
+name = "restaurant-backend-dev"
+routes = [
+  { pattern = "http://localhost:8787/*", zone_name = "example.com" }
+]
+
+[[env.development.kv_namespaces]]
+binding = "KV"
+id = "dev-kv-namespace"
+
+[env.production]
+name = "restaurant-backend"
+routes = [
+  { pattern = "https://api.example.com/*", zone_name = "example.com" }
+]
+
+[[env.production.kv_namespaces]]
+binding = "KV"
+id = "prod-kv-namespace"
+
+[build]
+command = "npm run build"
+cwd = "../../"
+watch_paths = ["src"]
+
+[build.upload]
+format = "esbuild"
+main = "./src/index.ts"
+
+[triggers]
+crons = []

@@ -1,0 +1,22 @@
+{
+  "name": "restaurant-dashboard",
+  "version": "1.0.0",
+  "description": "Fullstack restaurant operations system with Turborepo",
+  "private": true,
+  "packageManager": "pnpm@8.0.0",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "dev:dashboard": "turbo run dev --filter=dashboard",
+    "dev:backend": "turbo run dev --filter=backend",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "gen:contract": "turbo run gen:contract --filter=backend -- --first && turbo run gen:client --filter=api-client",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}

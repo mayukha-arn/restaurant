@@ -1,0 +1,18 @@
+{
+  "name": "@types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types and enums",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./entities": "./src/entities.ts",
+    "./orders": "./src/orders.ts",
+    "./api": "./src/api.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
