@@ -14,45 +14,48 @@ import { SettingsScreen } from './screens/SettingsScreen';
 
 type Screen = 'home' | 'orders' | 'menu' | 'crm' | 'settings';
 
+const NAV_ITEMS: { id: Screen; label: string }[] = [
+  { id: 'home',     label: 'Home' },
+  { id: 'settings', label: 'Settings' },
+  { id: 'crm',      label: 'CRM' },
+  { id: 'orders',   label: 'Orders' },
+  { id: 'menu',     label: 'Menu' },
+];
+
 function AppContent() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
 
   const renderScreen = () => {
     switch (currentScreen) {
-      case 'orders':
-        return <OrdersScreen onBack={() => setCurrentScreen('home')} />;
-      case 'menu':
-        return <MenuScreen onBack={() => setCurrentScreen('home')} />;
-      case 'crm':
-        return <CRMScreen onBack={() => setCurrentScreen('home')} />;
-      case 'settings':
-        return <SettingsScreen onBack={() => setCurrentScreen('home')} />;
+      case 'orders':   return <OrdersScreen  onBack={() => setCurrentScreen('home')} />;
+      case 'menu':     return <MenuScreen    onBack={() => setCurrentScreen('home')} />;
+      case 'crm':      return <CRMScreen     onBack={() => setCurrentScreen('home')} />;
+      case 'settings': return <SettingsScreen onBack={() => setCurrentScreen('home')} />;
       case 'home':
       default:
-        return (
-          <HomeScreen onNavigate={(section) => setCurrentScreen(section as Screen)} />
-        );
+        return <HomeScreen onNavigate={(s) => setCurrentScreen(s as Screen)} />;
     }
   };
 
   return (
     <div className="app-container">
-      {/* Navigation Header */}
-      {currentScreen !== 'home' && (
-        <div className="app-navbar">
-          <button
-            className="back-button"
-            onClick={() => setCurrentScreen('home')}
-          >
-            ← Back to Home
-          </button>
-          <h1 className="current-page-title">
-            {currentScreen.charAt(0).toUpperCase() + currentScreen.slice(1)}
-          </h1>
+      {/* Persistent Top Navbar */}
+      <nav className="topnav">
+        <span className="topnav-logo">DINER LOGO</span>
+        <div className="topnav-tabs">
+          {NAV_ITEMS.map(({ id, label }) => (
+            <button
+              key={id}
+              className={`topnav-tab${currentScreen === id ? ' active' : ''}`}
+              onClick={() => setCurrentScreen(id)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
-      )}
+      </nav>
 
-      {/* Main Content */}
+      {/* Screen Content */}
       <div className="app-content">
         <div className="screen-container">
           <div className="screen-content">
@@ -64,13 +67,6 @@ function AppContent() {
   );
 }
 
-/**
- * Root App Component
- *
- * Wraps AppContent with:
- * - ErrorBoundary: Catches JavaScript errors
- * - QueryProvider: React Query client and configuration
- */
 export default function App() {
   return (
     <ErrorBoundary>

@@ -3,208 +3,92 @@
    ============================================ */
 
 /* ============================================
-   HOME SCREEN
+   HOME SCREEN — CHEF'S RECS
    ============================================ */
 
-.home-screen {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-  padding: var(--spacing-6);
-  overflow-y: auto;
-}
-
-.home-table-container {
+.home-recs-bg {
   position: relative;
   width: 100%;
-  height: 500px;
-  margin: 0 auto var(--spacing-6) auto;
-  max-width: 900px;
-  border-radius: var(--radius-xl);
+  height: calc(100vh - 60px); /* full height minus navbar */
   overflow: hidden;
-  border: 3px solid var(--color-primary);
-  background-color: var(--color-white);
+  /* Pink checkered tablecloth */
+  background-color: #fff0f0;
+  background-image:
+    linear-gradient(45deg, rgba(220,20,60,0.12) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(220,20,60,0.12) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(220,20,60,0.12) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(220,20,60,0.12) 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
 }
 
-.home-checkered-background {
+.home-recs-heading {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: grid;
-  background-color: #FFFFFF;
+  top: 6%;
+  left: 5%;
+  font-family: var(--font-diner);
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-accent);
+  letter-spacing: 3px;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+  pointer-events: none;
   z-index: 1;
 }
 
-.home-header-overlay {
+/* Each food item is an absolutely-positioned button */
+.home-dish-btn {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  padding: var(--spacing-4);
-  background-color: rgba(255, 255, 255, 0.95);
-  border-bottom: 3px solid var(--color-primary);
-  text-align: center;
-}
-
-.home-title {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-1);
-  font-family: var(--font-diner);
-  letter-spacing: 2px;
-}
-
-.home-subtitle {
-  font-size: var(--font-size-sm);
-  color: var(--color-secondary);
-  font-style: italic;
-}
-
-.home-food-grid {
-  position: absolute;
-  top: 120px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  padding: var(--spacing-4);
-  gap: var(--spacing-3);
-  overflow-y: auto;
-  z-index: 5;
-}
-
-.home-food-item-wrapper {
-  width: 150px;
-  cursor: pointer;
-  transition: all var(--transition-base);
-}
-
-.home-food-item-wrapper:hover {
-  transform: scale(1.05);
-}
-
-.home-food-item-wrapper.hovered {
-  transform: scale(1.05);
-}
-
-.home-food-item-wrapper.selected {
-  opacity: 1;
-}
-
-.home-food-card {
-  overflow: hidden;
-  background-color: var(--color-white);
-  display: flex;
-  flex-direction: column;
-  border-width: 3px;
-}
-
-.home-food-card-content {
-  padding: var(--spacing-6) var(--spacing-4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.home-food-emoji {
-  font-size: 64px;
-  line-height: 72px;
-}
-
-.home-food-card-info {
-  padding: var(--spacing-3);
-  background-color: var(--color-light);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-}
-
-.home-food-name {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-dark);
-  margin: 0;
-  font-family: var(--font-diner);
-}
-
-.home-info-card {
-  margin: 0 auto var(--spacing-6) auto;
-  max-width: 900px;
-}
-
-.home-info-title {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-3);
-  font-family: var(--font-diner);
-}
-
-.home-info-text {
-  font-size: var(--font-size-base);
-  color: var(--color-dark);
-  line-height: 24px;
-  margin-bottom: var(--spacing-3);
-}
-
-.home-selected-text {
-  font-size: var(--font-size-sm);
-  color: var(--color-success);
-  font-weight: var(--font-weight-semibold);
-  margin-top: var(--spacing-3);
-  padding-top: var(--spacing-3);
-  border-top: 1px solid var(--color-secondary);
-}
-
-.nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: var(--spacing-6);
-  background-color: var(--color-white);
-  border: 2px solid var(--color-secondary);
-  border-radius: var(--radius-lg);
+  gap: 10px;
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-diner-sm);
-  text-align: center;
-  gap: var(--spacing-3);
-  min-height: 180px;
+  padding: 0;
+  transition: transform 200ms ease;
+  z-index: 2;
 }
 
-.nav-item:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-diner-lg);
-  border-color: var(--color-primary);
-  background-color: var(--color-light);
+.home-dish-btn:hover {
+  transform: scale(1.08) rotate(0deg) !important;
 }
 
-.nav-item:active {
-  transform: translateY(-2px);
-}
-
-.nav-item-icon {
-  font-size: 48px;
+/* White plate circle with drop shadow */
+.home-dish-plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 4px solid #1a1a1a;
+  box-shadow:
+    6px 6px 0 rgba(0,0,0,0.18),
+    inset 0 0 0 6px rgba(0,0,0,0.04);
   line-height: 1;
+  transition: box-shadow 200ms ease;
 }
 
-.nav-item-label {
-  font-size: var(--font-size-lg);
+.home-dish-btn:hover .home-dish-plate {
+  box-shadow: 10px 10px 0 rgba(0,0,0,0.22), inset 0 0 0 6px rgba(0,0,0,0.04);
+}
+
+.home-dish-label {
+  font-family: var(--font-diner);
+  font-size: clamp(14px, 2vw, 22px);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+}
+
+.home-dish-sublabel {
+  font-family: var(--font-diner);
+  font-size: clamp(11px, 1.4vw, 16px);
   font-weight: var(--font-weight-bold);
-  color: var(--color-dark);
-}
-
-.nav-item-description {
-  font-size: var(--font-size-xs);
-  color: var(--color-secondary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 /* ============================================

@@ -1,165 +1,105 @@
-import React, { useState } from 'react';
-import { Card, Badge } from '@shared/components';
+import React from 'react';
 import '../styles/screens.css';
-
-interface FoodItem {
-  id: string;
-  name: string;
-  emoji: string;
-  color: string;
-  section: string;
-  description: string;
-}
-
-const foodItems: FoodItem[] = [
-  {
-    id: 'fries',
-    name: 'Fries',
-    emoji: '🍟',
-    color: '#FFD700',
-    section: 'orders',
-    description: 'View Orders',
-  },
-  {
-    id: 'burger',
-    name: 'Burger',
-    emoji: '🍔',
-    color: '#D2691E',
-    section: 'menu',
-    description: 'Manage Menu',
-  },
-  {
-    id: 'cola',
-    name: 'Cola',
-    emoji: '🥤',
-    color: '#8B0000',
-    section: 'settings',
-    description: 'Settings',
-  },
-  {
-    id: 'icecream',
-    name: 'Ice Cream',
-    emoji: '🍦',
-    color: '#FFB6C1',
-    section: 'crm',
-    description: 'Customer CRM',
-  },
-];
-
-// Checkered pattern background component (CSS-based for performance)
-const CheckeredBackground = () => {
-  return (
-    <div
-      className="home-checkered-background"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundImage: `
-          linear-gradient(45deg, #E8E8E8 25%, transparent 25%),
-          linear-gradient(-45deg, #E8E8E8 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, #E8E8E8 75%),
-          linear-gradient(-45deg, transparent 75%, #E8E8E8 75%)
-        `,
-        backgroundSize: '40px 40px',
-        backgroundPosition: '0 0, 0 20px, 20px -20px, -20px 0px',
-        backgroundColor: '#FFFFFF',
-      }}
-    />
-  );
-};
 
 interface HomeScreenProps {
   onNavigate?: (section: string) => void;
 }
 
-export const HomeScreen = React.forwardRef<HTMLDivElement, HomeScreenProps>(
-  ({ onNavigate }, ref) => {
-    const [selectedFood, setSelectedFood] = useState<string | null>(null);
-    const [hoveredFood, setHoveredFood] = useState<string | null>(null);
+interface DishItem {
+  id: string;
+  emoji: string;
+  label: string;
+  labelColor: string;
+  sublabel?: string;
+  sublabelColor?: string;
+  section: string;
+  size: number;
+  top: string;
+  left: string;
+  rotate?: string;
+}
 
-    const handleFoodPress = (item: FoodItem) => {
-      setSelectedFood(item.id);
-      if (onNavigate) {
-        onNavigate(item.section);
-      }
-    };
+const DISHES: DishItem[] = [
+  {
+    id: 'burger',
+    emoji: '🍔',
+    label: 'BURGERS',
+    labelColor: '#DC143C',
+    section: 'menu',
+    size: 220,
+    top: '28%',
+    left: '8%',
+  },
+  {
+    id: 'cola',
+    emoji: '🥤',
+    label: 'COLA',
+    labelColor: '#4169E1',
+    sublabel: 'HOMEMADE',
+    sublabelColor: '#FF8C00',
+    section: 'menu',
+    size: 150,
+    top: '12%',
+    left: '42%',
+    rotate: '-6deg',
+  },
+  {
+    id: 'fries',
+    emoji: '🍟',
+    label: 'FRIES',
+    labelColor: '#DAA520',
+    section: 'orders',
+    size: 170,
+    top: '50%',
+    left: '40%',
+  },
+  {
+    id: 'icecream',
+    emoji: '🍨',
+    label: 'ICE CREAM',
+    labelColor: '#FF69B4',
+    section: 'crm',
+    size: 210,
+    top: '20%',
+    left: '68%',
+    rotate: '4deg',
+  },
+];
 
-    return (
-      <div
-        ref={ref}
-        className="home-screen overflow-y-auto"
-      >
-        {/* Checkered Table Background */}
-        <div className="home-table-container">
-          <CheckeredBackground />
+export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
+  return (
+    <div className="home-recs-bg">
+      <h1 className="home-recs-heading">CHEF'S RECS:</h1>
 
-          {/* Main Title - Vintage Diner Style */}
-          <div className="home-header-overlay">
-            <h1 className="home-title">🪩 DINER DASHBOARD 🪩</h1>
-            <p className="home-subtitle">Select a food to navigate</p>
-          </div>
-
-          {/* Food Items Grid */}
-          <div className="home-food-grid">
-            {foodItems.map((item) => (
-              <div
-                key={item.id}
-                className={`home-food-item-wrapper ${
-                  hoveredFood === item.id ? 'hovered' : ''
-                } ${selectedFood === item.id ? 'selected' : ''}`}
-                onClick={() => handleFoodPress(item)}
-                onMouseEnter={() => setHoveredFood(item.id)}
-                onMouseLeave={() => setHoveredFood(null)}
-              >
-                <Card
-                  variant="elevated"
-                  padding={false}
-                  className="home-food-card"
-                  style={{ borderColor: item.color, borderWidth: 3 }}
-                >
-                  <div
-                    className="home-food-card-content"
-                    style={{ backgroundColor: item.color }}
-                  >
-                    <div className="home-food-emoji">{item.emoji}</div>
-                  </div>
-                  <div className="home-food-card-info">
-                    <h3 className="home-food-name">{item.name}</h3>
-                    <Badge
-                      label={item.description}
-                      variant="default"
-                      size="sm"
-                    />
-                  </div>
-                </Card>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom Info Card */}
-        <Card
-          variant="filled"
-          className="home-info-card"
+      {DISHES.map((dish) => (
+        <button
+          key={dish.id}
+          className="home-dish-btn"
+          style={{
+            top: dish.top,
+            left: dish.left,
+            transform: `rotate(${dish.rotate ?? '0deg'})`,
+          }}
+          onClick={() => onNavigate?.(dish.section)}
         >
-          <h2 className="home-info-title">Welcome to the Diner!</h2>
-          <p className="home-info-text">
-            Click on any food item above to navigate to different sections of
-            the restaurant dashboard. This vintage 1950s themed interface brings
-            a classic diner aesthetic to modern operations.
-          </p>
-          {selectedFood && (
-            <p className="home-selected-text">
-              Selected: {foodItems.find((f) => f.id === selectedFood)?.name}
-            </p>
+          {dish.sublabel && (
+            <span className="home-dish-sublabel" style={{ color: dish.sublabelColor }}>
+              {dish.sublabel}
+            </span>
           )}
-        </Card>
-      </div>
-    );
-  }
-);
+          <div
+            className="home-dish-plate"
+            style={{ width: dish.size, height: dish.size, fontSize: dish.size * 0.42 }}
+          >
+            {dish.emoji}
+          </div>
+          <span className="home-dish-label" style={{ color: dish.labelColor }}>
+            {dish.label}
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+};
 
 HomeScreen.displayName = 'HomeScreen';

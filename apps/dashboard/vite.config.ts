@@ -6,6 +6,8 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   resolve: {
+    // Force single instances to prevent "No QueryClient set" errors in monorepos
+    dedupe: ['react', 'react-dom', '@tanstack/react-query'],
     alias: {
       '@': path.resolve(__dirname, '../../packages/shared/src'),
       '@shared': path.resolve(__dirname, '../../packages/shared/src'),
