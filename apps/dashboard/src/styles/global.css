@@ -1,29 +1,39 @@
 /* ============================================
-   RESTAURANT DASHBOARD - GLOBAL STYLES
-   Vintage Americana Diner Theme
+   THE DINER — OPERATIONS HQ
+   Warm, cozy diner dashboard design
    ============================================ */
 
 /* CSS Custom Properties - Design Tokens */
 :root {
-  /* Colors */
-  --color-primary: #DC143C;        /* Crimson red */
-  --color-secondary: #C0C0C0;      /* Chrome silver */
-  --color-accent: #FFD700;          /* Gold */
-  --color-dark: #1a1a1a;           /* Almost black */
-  --color-light: #FFFACD;          /* Lemon chiffon */
-  --color-white: #FFFFFF;          /* Pure white */
-  --color-success: #228B22;        /* Forest green */
-  --color-warning: #FF8C00;        /* Dark orange */
-  --color-error: #DC143C;          /* Crimson */
-  --color-background: #F5F5F5;     /* Light gray */
+  /* Brand Colors */
+  --color-primary: #E8471A;        /* Orange-red (accent, active states) */
+  --color-secondary: #9E7B65;      /* Warm muted brown */
+  --color-accent: #F5C842;         /* Revenue gold */
+  --color-dark: #2C1810;           /* Deep dark brown (sidebar) */
+  --color-light: #F5EDE3;          /* Warm cream (main bg) */
+  --color-white: #FFFFFF;
+  --color-success: #4CAF50;
+  --color-warning: #F5A623;
+  --color-error: #E8471A;
+  --color-background: #F5EDE3;     /* Warm cream */
+  --color-surface: #FFFFFF;        /* Card surface */
+  --color-border: #E8DDD4;         /* Subtle warm border */
+  --color-text-muted: #9E7B65;     /* Muted body text */
+  --color-text-dark: #2C1810;      /* Dark body text */
+
+  /* Sidebar */
+  --sidebar-bg: #2C1810;
+  --sidebar-width: 200px;
+  --sidebar-text: rgba(255,255,255,0.75);
+  --sidebar-text-active: #ffffff;
+  --sidebar-active-bg: #E8471A;
 
   /* Typography */
-  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-                  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-                  sans-serif;
-  --font-serif: 'Georgia', 'Times New Roman', serif;
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-script: 'Caveat', cursive;   /* handwritten headings */
+  --font-serif: 'Georgia', serif;
   --font-mono: 'Courier New', monospace;
-  --font-diner: 'Courier', monospace;
+  --font-diner: 'Caveat', cursive;
 
   --font-size-xs: 12px;
   --font-size-sm: 14px;
@@ -93,8 +103,8 @@ body {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
   line-height: 1.5;
-  color: var(--color-dark);
-  background-color: var(--color-white);
+  color: var(--color-text-dark);
+  background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -145,70 +155,101 @@ input:focus, textarea:focus {
 
 .app-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   min-height: 100vh;
-  background-color: var(--color-white);
+  background-color: var(--color-background);
 }
 
 .app-content {
   flex: 1;
   display: flex;
   overflow: hidden;
+  min-width: 0;
 }
 
 /* ============================================
-   PERSISTENT TOP NAVBAR
+   LEFT SIDEBAR
    ============================================ */
 
-.topnav {
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--spacing-7);
-  height: 60px;
-  background-color: var(--color-white);
-  border-bottom: 2px solid #e5e5e5;
-  flex-shrink: 0;
+  flex-direction: column;
+  padding: var(--spacing-6) 0;
   z-index: 100;
 }
 
-.topnav-logo {
-  font-family: var(--font-diner);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-extrabold);
-  font-style: italic;
-  color: var(--color-primary);
-  letter-spacing: 1px;
-  text-transform: uppercase;
+.sidebar-logo {
+  padding: 0 var(--spacing-5) var(--spacing-6) var(--spacing-5);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: var(--spacing-4);
 }
 
-.topnav-tabs {
+.sidebar-logo-name {
+  font-family: var(--font-script);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1.1;
+  display: block;
+}
+
+.sidebar-logo-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 var(--spacing-3);
+  flex: 1;
+}
+
+.sidebar-nav-btn {
   display: flex;
   align-items: center;
-  gap: var(--spacing-6);
-}
-
-.topnav-tab {
-  background: none;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
   border: none;
-  padding: var(--spacing-2) 0;
-  font-size: var(--font-size-base);
+  background: none;
+  color: var(--sidebar-text);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-normal);
-  color: var(--color-dark);
   cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: color var(--transition-base), border-color var(--transition-base);
-  letter-spacing: 0.3px;
+  text-align: left;
+  width: 100%;
+  transition: background var(--transition-base), color var(--transition-base);
 }
 
-.topnav-tab:hover {
-  color: var(--color-primary);
+.sidebar-nav-btn:hover {
+  background: rgba(255,255,255,0.07);
+  color: var(--sidebar-text-active);
 }
 
-.topnav-tab.active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
+.sidebar-nav-btn.active {
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-text-active);
   font-weight: var(--font-weight-semibold);
+}
+
+.sidebar-nav-btn svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.sidebar-nav-btn.active svg {
+  opacity: 1;
 }
 
 .screen-container {
@@ -216,7 +257,7 @@ input:focus, textarea:focus {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background-color: var(--color-white);
+  background-color: var(--color-background);
 }
 
 .screen-content {
