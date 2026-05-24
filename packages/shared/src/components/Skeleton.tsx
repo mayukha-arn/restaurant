@@ -1,48 +1,19 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle, Animated } from 'react-native';
-import { colors, spacing, radius } from '../tokens';
 
 interface SkeletonProps {
   width?: string | number;
   height?: number;
   borderRadius?: number;
-  style?: ViewStyle;
+  className?: string;
   count?: number;
 }
 
-const skeletonStyles = StyleSheet.create({
-  base: {
-    backgroundColor: colors.secondary,
-    overflow: 'hidden',
-  },
-  container: {
-    marginBottom: spacing[2],
-  },
-});
-
-const shimmerAnimation = new Animated.Value(0);
-
-Animated.loop(
-  Animated.sequence([
-    Animated.timing(shimmerAnimation, {
-      toValue: 1,
-      duration: 1500,
-      useNativeDriver: false,
-    }),
-    Animated.timing(shimmerAnimation, {
-      toValue: 0,
-      duration: 1500,
-      useNativeDriver: false,
-    }),
-  ])
-).start();
-
-export const Skeleton = React.forwardRef<any, SkeletonProps>(
+export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
   ({
     width = '100%',
     height = 16,
-    borderRadius = radius.md,
-    style,
+    borderRadius = 8,
+    className = '',
     count = 1,
   },
   ref
@@ -50,23 +21,20 @@ export const Skeleton = React.forwardRef<any, SkeletonProps>(
     const skeletons = Array.from({ length: count });
 
     return (
-      <View ref={ref}>
+      <div ref={ref}>
         {skeletons.map((_, i) => (
-          <View
+          <div
             key={i}
-            style={[
-              skeletonStyles.base,
-              {
-                width,
-                height,
-                borderRadius,
-              },
-              i < skeletons.length - 1 && skeletonStyles.container,
-              style,
-            ]}
+            className={`skeleton ${className}`.trim()}
+            style={{
+              width: typeof width === 'number' ? `${width}px` : width,
+              height: `${height}px`,
+              borderRadius: `${borderRadius}px`,
+              marginBottom: i < skeletons.length - 1 ? '8px' : 0,
+            }}
           />
         ))}
-      </View>
+      </div>
     );
   }
 );

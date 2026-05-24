@@ -8,7 +8,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ordersApi } from '../services/api.client';
 import { queryKeys } from '../queryKeys';
-import type { Order } from '@types';
+import type { Order } from '@restaurant/types';
 
 /**
  * Get all orders for a restaurant

@@ -1,61 +1,24 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors, spacing, radius, shadows } from '../tokens';
 
 interface CardProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  className?: string;
+  style?: React.CSSProperties;
   variant?: 'default' | 'elevated' | 'filled';
   padding?: boolean;
 }
 
-const cardStyles = StyleSheet.create({
-  base: {
-    borderRadius: radius.lg,
-    overflow: 'hidden',
-  },
-  default: {
-    backgroundColor: colors.white,
-    borderColor: colors.secondary,
-    borderWidth: 1,
-  },
-  elevated: {
-    backgroundColor: colors.white,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  filled: {
-    backgroundColor: colors.light,
-  },
-  padding: {
-    padding: spacing[4],
-  },
-});
-
-export const Card = React.forwardRef<any, CardProps>(
-  ({ children, style, variant = 'default', padding = true }, ref) => {
-    const variantStyle =
-      variant === 'elevated'
-        ? cardStyles.elevated
-        : variant === 'filled'
-          ? cardStyles.filled
-          : cardStyles.default;
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ children, className = '', style, variant = 'default', padding = true }, ref) => {
+    const baseClass = 'card';
+    const variantClass = `card-${variant}`;
+    const paddingClass = padding ? 'card-padding' : '';
+    const fullClass = `${baseClass} ${variantClass} ${paddingClass} ${className}`.trim();
 
     return (
-      <View
-        ref={ref}
-        style={[
-          cardStyles.base,
-          variantStyle,
-          padding && cardStyles.padding,
-          style,
-        ]}
-      >
+      <div ref={ref} className={fullClass} style={style}>
         {children}
-      </View>
+      </div>
     );
   }
 );

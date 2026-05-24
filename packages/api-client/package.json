@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "react-query": "^3.39.3",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "@restaurant/types": "workspace:*"
   },
   "devDependencies": {
     "orval": "^6.20.0",

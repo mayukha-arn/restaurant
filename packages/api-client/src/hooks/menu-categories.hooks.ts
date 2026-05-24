@@ -7,7 +7,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { menuCategoriesApi } from '../services/api.client';
 import { queryKeys } from '../queryKeys';
-import type { MenuCategory } from '@types';
+import type { MenuCategory } from '@restaurant/types';
 
 /**
  * Get all menu categories for a restaurant

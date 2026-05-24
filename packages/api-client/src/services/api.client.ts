@@ -2,7 +2,7 @@
  * API Client Service
  *
  * Low-level HTTP client for communicating with the backend API.
- * Uses axios with base configuration from config/api.ts
+ * Supports both real API (axios) and mock API (localStorage-based) for web deployment.
  *
  * All API responses have the format:
  * {
@@ -19,12 +19,18 @@ import {
   type Order,
   type Customer,
   type ApiResponse,
-} from '@types';
+} from '@restaurant/types';
+import mockApi from './mock-api';
 
 // Get API base URL from environment or use default
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8787';
 
-// Create axios instance with base config
+// Detect if we should use mock API (browser environment without backend)
+const USE_MOCK_API = typeof window !== 'undefined' &&
+                     (API_BASE_URL.includes('localhost:8787') ||
+                      process.env.REACT_APP_USE_MOCK_API === 'true');
+
+// Create axios instance with base config (used only in real API mode)
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -45,6 +51,24 @@ const extractData = <T>(response: ApiResponse<T>): T => {
 };
 
 /**
+ * Wrapper function that routes to either mock API or real API
+ */
+const apiCall = async <T,>(
+  mockFn: () => Promise<ApiResponse<T> | { success: boolean; data: T[] }>,
+  realFn: () => Promise<any>
+): Promise<T | T[]> => {
+  if (USE_MOCK_API) {
+    const response = await mockFn();
+    if ('data' in response && Array.isArray(response.data)) {
+      return response.data;
+    }
+    return extractData(response as ApiResponse<T>);
+  }
+  const response = await realFn();
+  return extractData(response.data);
+};
+
+/**
  * ============================================================================
  * ORDERS API
  * ============================================================================
@@ -55,18 +79,22 @@ export const ordersApi = {
    * Get all orders for a restaurant
    */
   list: async (restaurantId: number): Promise<Order[]> => {
-    const response = await apiClient.get<ApiResponse<Order[]>>(
-      `/api/orders/restaurant/${restaurantId}`
-    );
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getOrdersByRestaurant(restaurantId),
+      () => apiClient.get<ApiResponse<Order[]>>(
+        `/api/orders/restaurant/${restaurantId}`
+      )
+    ) as Promise<Order[]>;
   },
 
   /**
    * Get a single order by ID
    */
   getById: async (id: number): Promise<Order> => {
-    const response = await apiClient.get<ApiResponse<Order>>(`/api/orders/${id}`);
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getOrder(id),
+      () => apiClient.get<ApiResponse<Order>>(`/api/orders/${id}`)
+    ) as Promise<Order>;
   },
 
   /**
@@ -86,11 +114,13 @@ export const ordersApi = {
       notes?: string;
     }
   ): Promise<Order> => {
-    const response = await apiClient.post<ApiResponse<Order>>(
-      `/api/orders/${restaurantId}`,
-      data
-    );
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getOrdersByRestaurant(restaurantId),
+      () => apiClient.post<ApiResponse<Order>>(
+        `/api/orders/${restaurantId}`,
+        data
+      )
+    ) as Promise<Order>;
   },
 
   /**
@@ -105,18 +135,31 @@ export const ordersApi = {
       notes?: string;
     }
   ): Promise<Order> => {
-    const response = await apiClient.put<ApiResponse<Order>>(`/api/orders/${id}`, data);
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.updateOrder(id, data),
+      () => apiClient.put<ApiResponse<Order>>(`/api/orders/${id}`, data)
+    ) as Promise<Order>;
   },
 
   /**
    * Look up an order by order number
    */
   lookup: async (orderNumber: string): Promise<Order> => {
-    const response = await apiClient.get<ApiResponse<Order>>(
-      `/api/orders/lookup/${orderNumber}`
-    );
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getOrdersByRestaurant(1).then(
+        (response) => {
+          const order = (response as any).data?.find(
+            (o: any) => o.orderNumber === orderNumber
+          );
+          return order
+            ? { success: true, data: order }
+            : { success: false, error: 'Not found' };
+        }
+      ),
+      () => apiClient.get<ApiResponse<Order>>(
+        `/api/orders/lookup/${orderNumber}`
+      )
+    ) as Promise<Order>;
   },
 };
 
@@ -131,28 +174,34 @@ export const menuItemsApi = {
    * Get all menu items for a restaurant
    */
   listByRestaurant: async (restaurantId: number): Promise<MenuItem[]> => {
-    const response = await apiClient.get<ApiResponse<MenuItem[]>>(
-      `/api/menu-items/restaurant/${restaurantId}`
-    );
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getMenuItemsByRestaurant(restaurantId),
+      () => apiClient.get<ApiResponse<MenuItem[]>>(
+        `/api/menu-items/restaurant/${restaurantId}`
+      )
+    ) as Promise<MenuItem[]>;
   },
 
   /**
    * Get menu items in a specific category
    */
   listByCategory: async (categoryId: number): Promise<MenuItem[]> => {
-    const response = await apiClient.get<ApiResponse<MenuItem[]>>(
-      `/api/menu-items/category/${categoryId}`
-    );
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getMenuItemsByCategory(categoryId),
+      () => apiClient.get<ApiResponse<MenuItem[]>>(
+        `/api/menu-items/category/${categoryId}`
+      )
+    ) as Promise<MenuItem[]>;
   },
 
   /**
    * Get a single menu item
    */
   getById: async (id: number): Promise<MenuItem> => {
-    const response = await apiClient.get<ApiResponse<MenuItem>>(`/api/menu-items/${id}`);
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getMenuItem(id),
+      () => apiClient.get<ApiResponse<MenuItem>>(`/api/menu-items/${id}`)
+    ) as Promise<MenuItem>;
   },
 
   /**
@@ -207,20 +256,24 @@ export const menuCategoriesApi = {
    * Get all menu categories for a restaurant
    */
   list: async (restaurantId: number): Promise<MenuCategory[]> => {
-    const response = await apiClient.get<ApiResponse<MenuCategory[]>>(
-      `/api/menu-categories/restaurant/${restaurantId}`
-    );
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getMenuCategories(restaurantId),
+      () => apiClient.get<ApiResponse<MenuCategory[]>>(
+        `/api/menu-categories/restaurant/${restaurantId}`
+      )
+    ) as Promise<MenuCategory[]>;
   },
 
   /**
    * Get a single menu category
    */
   getById: async (id: number): Promise<MenuCategory> => {
-    const response = await apiClient.get<ApiResponse<MenuCategory>>(
-      `/api/menu-categories/${id}`
-    );
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getMenuCategory(id),
+      () => apiClient.get<ApiResponse<MenuCategory>>(
+        `/api/menu-categories/${id}`
+      )
+    ) as Promise<MenuCategory>;
   },
 
   /**
@@ -272,18 +325,22 @@ export const customersApi = {
    * Get all customers for a restaurant
    */
   list: async (restaurantId: number): Promise<Customer[]> => {
-    const response = await apiClient.get<ApiResponse<Customer[]>>(
-      `/api/customers/restaurant/${restaurantId}`
-    );
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getCustomers(restaurantId),
+      () => apiClient.get<ApiResponse<Customer[]>>(
+        `/api/customers/restaurant/${restaurantId}`
+      )
+    ) as Promise<Customer[]>;
   },
 
   /**
    * Get a single customer
    */
   getById: async (id: number): Promise<Customer> => {
-    const response = await apiClient.get<ApiResponse<Customer>>(`/api/customers/${id}`);
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getCustomer(id),
+      () => apiClient.get<ApiResponse<Customer>>(`/api/customers/${id}`)
+    ) as Promise<Customer>;
   },
 
   /**
@@ -334,23 +391,29 @@ export const restaurantsApi = {
    * Get all restaurants
    */
   list: async (): Promise<Restaurant[]> => {
-    const response = await apiClient.get<ApiResponse<Restaurant[]>>('/api/restaurants');
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getRestaurants(),
+      () => apiClient.get<ApiResponse<Restaurant[]>>('/api/restaurants')
+    ) as Promise<Restaurant[]>;
   },
 
   /**
    * Get a single restaurant
    */
   getById: async (id: number): Promise<Restaurant> => {
-    const response = await apiClient.get<ApiResponse<Restaurant>>(`/api/restaurants/${id}`);
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.getRestaurant(id),
+      () => apiClient.get<ApiResponse<Restaurant>>(`/api/restaurants/${id}`)
+    ) as Promise<Restaurant>;
   },
 
   /**
    * Update a restaurant
    */
   update: async (id: number, data: Partial<Restaurant>): Promise<Restaurant> => {
-    const response = await apiClient.put<ApiResponse<Restaurant>>(`/api/restaurants/${id}`, data);
-    return extractData(response.data);
+    return apiCall(
+      () => mockApi.updateRestaurant(id, data),
+      () => apiClient.put<ApiResponse<Restaurant>>(`/api/restaurants/${id}`, data)
+    ) as Promise<Restaurant>;
   },
 };

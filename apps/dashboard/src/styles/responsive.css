@@ -1,0 +1,494 @@
+/* ============================================
+   RESPONSIVE DESIGN STYLES
+   ============================================ */
+
+/* Mobile First Approach */
+
+/* ============================================
+   MOBILE (0px - 374px)
+   ============================================ */
+
+@media (max-width: 374px) {
+  :root {
+    font-size: 14px;
+  }
+
+  .app-navbar {
+    padding: var(--spacing-2) var(--spacing-2);
+  }
+
+  .button-lg {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-base);
+  }
+
+  h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  .card-padding {
+    padding: var(--spacing-2);
+  }
+}
+
+/* ============================================
+   SMALL MOBILE (375px - 599px)
+   ============================================ */
+
+@media (min-width: 375px) and (max-width: 599px) {
+  .app-navbar {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .screen-container {
+    padding-bottom: var(--spacing-4);
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .flex-row-md {
+    flex-direction: column;
+  }
+
+  .gap-responsive {
+    gap: var(--spacing-2);
+  }
+
+  .px-responsive {
+    padding-left: var(--spacing-2);
+    padding-right: var(--spacing-2);
+  }
+
+  .text-responsive-sm {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* ============================================
+   TABLET (600px - 1023px)
+   ============================================ */
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .container-responsive {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+  }
+
+  .flex-row-md {
+    flex-direction: row;
+  }
+
+  .card-responsive {
+    padding: var(--spacing-6);
+  }
+
+  .button-lg {
+    padding: var(--spacing-3) var(--spacing-5);
+  }
+
+  .hidden-tablet {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   DESKTOP (1024px+)
+   ============================================ */
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-6);
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-6);
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-6);
+  }
+
+  .flex-row-lg {
+    flex-direction: row;
+  }
+
+  .card-responsive {
+    padding: var(--spacing-8);
+  }
+
+  .button-lg {
+    padding: var(--spacing-4) var(--spacing-8);
+    width: auto;
+  }
+
+  .hidden-desktop {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   SCREEN SPECIFIC RESPONSIVE
+   ============================================ */
+
+/* HomeScreen */
+@media (max-width: 599px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-title {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+@media (min-width: 600px) {
+  .home-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* OrdersScreen */
+@media (max-width: 599px) {
+  .order-card {
+    padding: var(--spacing-3);
+  }
+
+  .order-items {
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .order-status {
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (min-width: 600px) {
+  .order-card {
+    padding: var(--spacing-4);
+  }
+
+  .order-items {
+    flex-direction: row;
+    gap: var(--spacing-4);
+  }
+}
+
+/* MenuScreen */
+@media (max-width: 599px) {
+  .categories-scroll {
+    gap: var(--spacing-2);
+  }
+
+  .category-tab {
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-sm);
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-card {
+    padding: var(--spacing-3);
+  }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .categories-scroll {
+    gap: var(--spacing-3);
+  }
+
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .categories-scroll {
+    gap: var(--spacing-4);
+  }
+
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* CRMScreen */
+@media (max-width: 599px) {
+  .customer-card {
+    padding: var(--spacing-3);
+  }
+
+  .customer-stats {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .stat-item {
+    width: 100%;
+  }
+}
+
+@media (min-width: 600px) {
+  .customer-card {
+    padding: var(--spacing-4);
+  }
+
+  .customer-stats {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+
+/* SettingsScreen */
+@media (max-width: 599px) {
+  .settings-card {
+    padding: var(--spacing-3);
+  }
+
+  .settings-row {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .time-row {
+    flex-direction: column;
+  }
+
+  .time-field {
+    width: 100%;
+  }
+}
+
+@media (min-width: 600px) {
+  .settings-card {
+    padding: var(--spacing-4);
+  }
+
+  .settings-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .time-row {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+
+/* ============================================
+   LAYOUT RESPONSIVE UTILITIES
+   ============================================ */
+
+.flex-col-mobile {
+  flex-direction: column;
+}
+
+@media (min-width: 600px) {
+  .flex-col-mobile {
+    flex-direction: row;
+  }
+}
+
+.w-full-mobile {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .w-full-mobile {
+    width: auto;
+  }
+}
+
+.block-mobile {
+  display: block;
+}
+
+@media (min-width: 600px) {
+  .block-mobile {
+    display: inline-block;
+  }
+}
+
+.text-center-mobile {
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .text-center-mobile {
+    text-align: left;
+  }
+}
+
+/* ============================================
+   PADDING RESPONSIVE
+   ============================================ */
+
+.p-responsive {
+  padding: var(--spacing-3);
+}
+
+@media (min-width: 600px) {
+  .p-responsive {
+    padding: var(--spacing-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .p-responsive {
+    padding: var(--spacing-6);
+  }
+}
+
+.px-responsive {
+  padding-left: var(--spacing-3);
+  padding-right: var(--spacing-3);
+}
+
+@media (min-width: 600px) {
+  .px-responsive {
+    padding-left: var(--spacing-4);
+    padding-right: var(--spacing-4);
+  }
+}
+
+.py-responsive {
+  padding-top: var(--spacing-3);
+  padding-bottom: var(--spacing-3);
+}
+
+@media (min-width: 600px) {
+  .py-responsive {
+    padding-top: var(--spacing-4);
+    padding-bottom: var(--spacing-4);
+  }
+}
+
+/* ============================================
+   MARGIN RESPONSIVE
+   ============================================ */
+
+.mb-responsive {
+  margin-bottom: var(--spacing-3);
+}
+
+@media (min-width: 600px) {
+  .mb-responsive {
+    margin-bottom: var(--spacing-4);
+  }
+}
+
+.mt-responsive {
+  margin-top: var(--spacing-3);
+}
+
+@media (min-width: 600px) {
+  .mt-responsive {
+    margin-top: var(--spacing-4);
+  }
+}
+
+/* ============================================
+   ORIENTATION
+   ============================================ */
+
+@media (orientation: landscape) {
+  .landscape-hidden {
+    display: none;
+  }
+
+  .app-navbar {
+    flex-direction: row;
+    gap: var(--spacing-2);
+  }
+}
+
+@media (orientation: portrait) {
+  .portrait-hidden {
+    display: none;
+  }
+}
+
+/* ============================================
+   HIGH RESOLUTION (RETINA)
+   ============================================ */
+
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  /* Thinner shadows and borders for retina */
+  .card-elevated {
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.2);
+  }
+
+  .button {
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   DARK MODE (OPTIONAL)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  /* Users who prefer dark mode can have different styles here */
+  /* For now, keeping the vintage diner theme as-is */
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  body {
+    background-color: white;
+    color: black;
+  }
+
+  .app-navbar,
+  .no-print {
+    display: none !important;
+  }
+
+  .button,
+  .link {
+    text-decoration: underline;
+  }
+}

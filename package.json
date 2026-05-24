@@ -9,10 +9,12 @@
     "dev:dashboard": "turbo run dev --filter=dashboard",
     "dev:backend": "turbo run dev --filter=backend",
     "build": "turbo run build",
+    "build:web": "turbo run build --filter=dashboard",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "gen:contract": "turbo run gen:contract --filter=backend -- --first && turbo run gen:client --filter=api-client",
+    "deploy": "npm run build:web && turbo run deploy --filter=dashboard",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {

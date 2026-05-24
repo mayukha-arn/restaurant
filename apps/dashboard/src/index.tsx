@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import {
-  View,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Pressable,
-  Text,
-} from 'react-native';
-import { colors, spacing, typography } from '@shared/tokens';
+import './styles/global.css';
+import './styles/components.css';
+import './styles/screens.css';
+import './styles/animations.css';
+import './styles/responsive.css';
 import { QueryProvider } from './providers/QueryProvider';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HomeScreen } from './screens/HomeScreen';
@@ -40,29 +36,31 @@ function AppContent() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-
+    <div className="app-container">
       {/* Navigation Header */}
       {currentScreen !== 'home' && (
-        <View style={styles.navBar}>
-          <Pressable
-            onPress={() => setCurrentScreen('home')}
-            style={styles.backButton}
+        <div className="app-navbar">
+          <button
+            className="back-button"
+            onClick={() => setCurrentScreen('home')}
           >
-            <Text style={styles.backButtonText}>← Back to Home</Text>
-          </Pressable>
-          <Text style={styles.currentPageTitle}>
+            ← Back to Home
+          </button>
+          <h1 className="current-page-title">
             {currentScreen.charAt(0).toUpperCase() + currentScreen.slice(1)}
-          </Text>
-        </View>
+          </h1>
+        </div>
       )}
 
       {/* Main Content */}
-      <View style={styles.content}>
-        {renderScreen()}
-      </View>
-    </SafeAreaView>
+      <div className="app-content">
+        <div className="screen-container">
+          <div className="screen-content">
+            {renderScreen()}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -82,40 +80,3 @@ export default function App() {
     </ErrorBoundary>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  navBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing[4],
-    paddingVertical: spacing[3],
-    backgroundColor: colors.light,
-    borderBottomWidth: 2,
-    borderBottomColor: colors.primary,
-  },
-  backButton: {
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
-    backgroundColor: colors.primary,
-    borderRadius: 6,
-    marginRight: spacing[4],
-  },
-  backButtonText: {
-    color: colors.white,
-    fontWeight: '600',
-    fontSize: typography.fontSize.sm,
-  },
-  currentPageTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: '700',
-    color: colors.primary,
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-  },
-});

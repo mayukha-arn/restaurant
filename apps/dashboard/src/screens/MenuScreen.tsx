@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
-import { colors, spacing, typography } from '@shared/tokens';
 import { Card, Badge, Skeleton } from '@shared/components';
 import {
   useMenuCategoriesList,
   useMenuItemsListByCategory,
   useRestaurantId,
 } from '../hooks';
+import '../styles/screens.css';
 
 interface MenuScreenProps {
   onBack?: () => void;
 }
 
-export const MenuScreen = React.forwardRef<any, MenuScreenProps>(
+export const MenuScreen = React.forwardRef<HTMLDivElement, MenuScreenProps>(
   ({ onBack }, ref) => {
     const restaurantId = useRestaurantId();
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -42,199 +41,80 @@ export const MenuScreen = React.forwardRef<any, MenuScreenProps>(
     };
 
     return (
-      <ScrollView
+      <div
         ref={ref}
-        style={styles.container}
-        contentContainerStyle={styles.content}
+        className="menu-screen overflow-y-auto"
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>🍽️ Menu</Text>
-          <Text style={styles.subtitle}>Browse menu items</Text>
-        </View>
+        <div className="menu-header">
+          <h1 className="menu-title">🍽️ Menu</h1>
+          <p className="menu-subtitle">Browse menu items</p>
+        </div>
 
         {/* Category Tabs */}
         {categoriesLoading ? (
-          <View style={styles.categoriesLoading}>
-            <Skeleton style={styles.categoryTab} />
-            <Skeleton style={styles.categoryTab} />
-          </View>
+          <div className="categories-loading">
+            <Skeleton className="category-tab" />
+            <Skeleton className="category-tab" />
+          </div>
         ) : categoriesError ? (
-          <Text style={styles.errorText}>Failed to load categories</Text>
+          <p className="error-text">Failed to load categories</p>
         ) : categories && categories.length > 0 ? (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.categoriesList}
-            contentContainerStyle={styles.categoriesContent}
-          >
+          <div className="categories-scroll">
             {categories.map((category) => (
-              <Pressable
+              <button
                 key={category.id}
-                style={[
-                  styles.categoryTab,
-                  selectedCategoryId === category.id && styles.categoryTabActive,
-                ]}
-                onPress={() => setSelectedCategoryId(category.id)}
+                className={`category-tab ${
+                  selectedCategoryId === category.id ? 'active' : ''
+                }`}
+                onClick={() => setSelectedCategoryId(category.id)}
               >
-                <Text
-                  style={[
-                    styles.categoryTabText,
-                    selectedCategoryId === category.id && styles.categoryTabTextActive,
-                  ]}
-                >
-                  {category.name}
-                </Text>
-              </Pressable>
+                {category.name}
+              </button>
             ))}
-          </ScrollView>
+          </div>
         ) : null}
 
         {/* Menu Items */}
-        {itemsLoading ? (
-          <>
-            <Skeleton style={styles.menuCard} />
-            <Skeleton style={styles.menuCard} />
-            <Skeleton style={styles.menuCard} />
-          </>
-        ) : itemsError ? (
-          <Text style={styles.errorText}>Failed to load items</Text>
-        ) : items && items.length > 0 ? (
-          items.map((item) => (
-            <Card key={item.id} variant="elevated" style={styles.menuCard}>
-              <View style={styles.menuHeader}>
-                <View style={styles.menuInfo}>
-                  <Text style={styles.itemName}>{item.name}</Text>
-                  {item.description && (
-                    <Text style={styles.itemDescription}>{item.description}</Text>
-                  )}
-                  <View style={styles.menuAttributes}>
-                    {item.isVegetarian && (
-                      <Badge label="🌱 Vegetarian" variant="info" size="sm" />
+        <div className="menu-items-list">
+          {itemsLoading ? (
+            <>
+              <Skeleton className="menu-card" />
+              <Skeleton className="menu-card" />
+              <Skeleton className="menu-card" />
+            </>
+          ) : itemsError ? (
+            <p className="error-text">Failed to load items</p>
+          ) : items && items.length > 0 ? (
+            items.map((item) => (
+              <Card key={item.id} variant="elevated" className="menu-card">
+                <div className="menu-card-header">
+                  <div className="menu-item-info">
+                    <h3 className="menu-item-name">{item.name}</h3>
+                    {item.description && (
+                      <p className="menu-item-description">{item.description}</p>
                     )}
-                    {item.isSpicy && (
-                      <Badge label="🌶️ Spicy" variant="warning" size="sm" />
-                    )}
-                  </View>
-                </View>
-                <Text style={styles.itemPrice}>{formatPrice(item.price)}</Text>
-              </View>
-            </Card>
-          ))
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No items in this category</Text>
-          </View>
-        )}
-      </ScrollView>
+                    <div className="menu-attributes">
+                      {item.isVegetarian && (
+                        <Badge label="🌱 Vegetarian" variant="info" size="sm" />
+                      )}
+                      {item.isSpicy && (
+                        <Badge label="🌶️ Spicy" variant="warning" size="sm" />
+                      )}
+                    </div>
+                  </div>
+                  <p className="menu-item-price">{formatPrice(item.price)}</p>
+                </div>
+              </Card>
+            ))
+          ) : (
+            <div className="empty-state-container">
+              <p className="empty-state-text">No items in this category</p>
+            </div>
+          )}
+        </div>
+      </div>
     );
   }
 );
 
 MenuScreen.displayName = 'MenuScreen';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  content: {
-    paddingVertical: spacing[4],
-  },
-  header: {
-    paddingHorizontal: spacing[4],
-    marginBottom: spacing[6],
-    borderBottomWidth: 2,
-    borderBottomColor: colors.primary,
-    paddingBottom: spacing[4],
-  },
-  title: {
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: spacing[1],
-  },
-  subtitle: {
-    fontSize: typography.fontSize.sm,
-    color: colors.secondary,
-  },
-  categoriesList: {
-    marginBottom: spacing[4],
-  },
-  categoriesContent: {
-    paddingHorizontal: spacing[4],
-  },
-  categoriesLoading: {
-    flexDirection: 'row',
-    paddingHorizontal: spacing[4],
-    marginBottom: spacing[4],
-  },
-  categoryTab: {
-    marginRight: spacing[3],
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
-    borderRadius: 6,
-    backgroundColor: colors.light,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  categoryTabActive: {
-    backgroundColor: colors.primary,
-  },
-  categoryTabText: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  categoryTabTextActive: {
-    color: colors.white,
-  },
-  menuCard: {
-    marginHorizontal: spacing[4],
-    marginBottom: spacing[3],
-    padding: spacing[4],
-  },
-  menuHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  menuInfo: {
-    flex: 1,
-    marginRight: spacing[4],
-  },
-  itemName: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: '700',
-    color: colors.dark,
-    marginBottom: spacing[1],
-  },
-  itemDescription: {
-    fontSize: typography.fontSize.sm,
-    color: colors.secondary,
-    marginBottom: spacing[2],
-  },
-  menuAttributes: {
-    flexDirection: 'row',
-    gap: spacing[2],
-  },
-  itemPrice: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  errorText: {
-    fontSize: typography.fontSize.base,
-    color: colors.danger,
-    paddingHorizontal: spacing[4],
-    marginBottom: spacing[4],
-  },
-  emptyContainer: {
-    paddingHorizontal: spacing[4],
-    paddingVertical: spacing[8],
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: typography.fontSize.base,
-    color: colors.secondary,
-  },
-});

@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch, ActivityIndicator } from 'react-native';
-import { colors, spacing, typography } from '@shared/tokens';
 import { Card, Button } from '@shared/components';
 import { useRestaurant, useUpdateRestaurant, useRestaurantId } from '../hooks';
+import '../styles/screens.css';
 
 interface SettingsScreenProps {
   onBack?: () => void;
 }
 
-export const SettingsScreen = React.forwardRef<any, SettingsScreenProps>(
+export const SettingsScreen = React.forwardRef<HTMLDivElement, SettingsScreenProps>(
   ({ onBack }, ref) => {
     const restaurantId = useRestaurantId();
     const { data: restaurant, isLoading } = useRestaurant(restaurantId);
@@ -43,171 +42,87 @@ export const SettingsScreen = React.forwardRef<any, SettingsScreenProps>(
 
     if (isLoading) {
       return (
-        <View style={[styles.container, styles.loadingContainer]}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
+        <div className="settings-screen loading-container">
+          <div className="spinner spinner-lg" />
+        </div>
       );
     }
 
     return (
-      <ScrollView
+      <div
         ref={ref}
-        style={styles.container}
-        contentContainerStyle={styles.content}
+        className="settings-screen overflow-y-auto"
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>⚙️ Settings</Text>
-          <Text style={styles.subtitle}>Configure your restaurant</Text>
-        </View>
+        <div className="settings-header">
+          <h1 className="settings-title">⚙️ Settings</h1>
+          <p className="settings-subtitle">Configure your restaurant</p>
+        </div>
 
         {/* Restaurant Status */}
-        <Card variant="elevated" style={styles.settingCard}>
-          <View style={styles.settingRow}>
-            <View>
-              <Text style={styles.settingLabel}>Restaurant Open</Text>
-              <Text style={styles.settingDescription}>
+        <Card variant="elevated" className="settings-card">
+          <div className="settings-row">
+            <div>
+              <h3 className="settings-label">Restaurant Open</h3>
+              <p className="settings-description">
                 {isOpen ? 'Currently accepting orders' : 'Closed to new orders'}
-              </Text>
-            </View>
-            <Switch
-              value={isOpen}
-              onValueChange={setIsOpen}
-              trackColor={{ false: colors.secondary, true: colors.primary }}
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={isOpen}
+              onChange={(e) => setIsOpen(e.target.checked)}
+              style={{
+                accentColor: 'var(--color-primary)',
+                width: '40px',
+                height: '24px',
+                cursor: 'pointer',
+              }}
             />
-          </View>
+          </div>
         </Card>
 
         {/* Operating Hours */}
-        <Card variant="elevated" style={styles.settingCard}>
-          <View style={styles.settingGroup}>
-            <Text style={styles.settingLabel}>Operating Hours</Text>
-            <View style={styles.timeRow}>
-              <View style={styles.timeField}>
-                <Text style={styles.timeLabel}>Opens</Text>
-                <Text style={styles.timeValue}>{openTime}</Text>
-              </View>
-              <View style={styles.timeField}>
-                <Text style={styles.timeLabel}>Closes</Text>
-                <Text style={styles.timeValue}>{closeTime}</Text>
-              </View>
-            </View>
-            <Text style={styles.settingDescription}>
+        <Card variant="elevated" className="settings-card">
+          <div className="settings-group">
+            <h3 className="settings-label">Operating Hours</h3>
+            <div className="time-row">
+              <div className="time-field">
+                <p className="time-label">Opens</p>
+                <p className="time-value">{openTime}</p>
+              </div>
+              <div className="time-field">
+                <p className="time-label">Closes</p>
+                <p className="time-value">{closeTime}</p>
+              </div>
+            </div>
+            <p className="settings-description">
               Max Capacity: {maxCapacity} guests
-            </Text>
-          </View>
+            </p>
+          </div>
         </Card>
 
         {/* Restaurant Info */}
         {restaurant && (
-          <Card variant="elevated" style={styles.settingCard}>
-            <View style={styles.settingGroup}>
-              <Text style={styles.settingLabel}>{restaurant.name}</Text>
-              <Text style={styles.infoText}>{restaurant.address}</Text>
-              <Text style={styles.infoText}>{restaurant.phone}</Text>
-              <Text style={styles.infoText}>{restaurant.email}</Text>
-            </View>
+          <Card variant="elevated" className="settings-card">
+            <div className="settings-group">
+              <h3 className="settings-label">{restaurant.name}</h3>
+              <p className="settings-info-text">{restaurant.address}</p>
+              <p className="settings-info-text">{restaurant.phone}</p>
+              <p className="settings-info-text">{restaurant.email}</p>
+            </div>
           </Card>
         )}
 
         {/* Save Button */}
         <Button
           label={updateMutation.isPending ? 'Saving...' : 'Save Settings'}
-          onPress={handleSave}
-          style={styles.saveButton}
+          onClick={handleSave}
+          className="settings-save-button"
           disabled={updateMutation.isPending}
         />
-      </ScrollView>
+      </div>
     );
   }
 );
 
 SettingsScreen.displayName = 'SettingsScreen';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  content: {
-    paddingVertical: spacing[4],
-  },
-  header: {
-    paddingHorizontal: spacing[4],
-    marginBottom: spacing[6],
-    borderBottomWidth: 2,
-    borderBottomColor: colors.primary,
-    paddingBottom: spacing[4],
-  },
-  title: {
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: spacing[1],
-  },
-  subtitle: {
-    fontSize: typography.fontSize.sm,
-    color: colors.secondary,
-  },
-  settingCard: {
-    marginHorizontal: spacing[4],
-    marginBottom: spacing[3],
-    padding: spacing[4],
-  },
-  settingRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  settingLabel: {
-    fontSize: typography.fontSize.base,
-    fontWeight: '700',
-    color: colors.dark,
-    marginBottom: spacing[1],
-  },
-  settingDescription: {
-    fontSize: typography.fontSize.sm,
-    color: colors.secondary,
-  },
-  settingGroup: {
-    marginBottom: spacing[2],
-  },
-  timeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: spacing[3],
-  },
-  timeField: {
-    alignItems: 'center',
-  },
-  timeLabel: {
-    fontSize: typography.fontSize.sm,
-    color: colors.secondary,
-    marginBottom: spacing[1],
-  },
-  timeValue: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  infoBox: {
-    marginTop: spacing[3],
-    paddingVertical: spacing[3],
-    paddingHorizontal: spacing[3],
-    backgroundColor: colors.light,
-    borderRadius: 8,
-  },
-  infoText: {
-    fontSize: typography.fontSize.sm,
-    color: colors.dark,
-    marginBottom: spacing[2],
-  },
-  saveButton: {
-    marginHorizontal: spacing[4],
-    marginTop: spacing[4],
-    marginBottom: spacing[6],
-  },
-});

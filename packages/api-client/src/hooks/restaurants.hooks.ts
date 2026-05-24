@@ -7,7 +7,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { restaurantsApi } from '../services/api.client';
 import { queryKeys } from '../queryKeys';
-import type { Restaurant } from '@types';
+import type { Restaurant } from '@restaurant/types';
 
 /**
  * Get all restaurants
